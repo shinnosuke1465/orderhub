@@ -1,0 +1,65 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
+
+interface Product {
+    id: number;
+    name: string;
+    code: string;
+    price: number;
+    tax: number;
+}
+
+interface ProductsProps {
+    products: Product[];
+}
+
+export default function Products({ products }: ProductsProps) {
+    return (
+        <AuthenticatedLayout
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Products</h2>}
+        >
+            <Head title="Products" />
+
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div className="p-6 text-gray-900">商品一覧</div>
+                    </div>
+                </div>
+
+                <div className="m-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2">
+                    <table className="table-auto border border-gray-400 w-10/12 m-3">
+                        <thead>
+                        <tr className="bg-gray-100">
+                            <th className="px-4 py-2 w-12">ID</th>
+                            <th className="px-4 py-2 w-48">商品</th>
+                            <th className="px-4 py-2 w-28">コード</th>
+                            <th className="px-4 py-2 w-28 text-center">価格</th>
+                            <th className="px-4 py-2 w-28 text-center">税率</th>
+                            <th className="px-4 py-2"></th>
+                            <th className="px-4 py-2"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {products.map((product) => {
+                            return (
+                            <tr key={product.id}>
+                            <td className="border border-gray-400 px-4 py-2 text-center">{product.id}</td>
+                            <td className="border border-gray-400 px-4 py-2">{product.name}</td>
+                            <td className="border border-gray-400 px-4 py-2 text-center">{product.code}</td>
+                            <td className="border border-gray-400 px-4 py-2 text-right">{product.price}</td>
+                            <td className="border border-gray-400 px-4 py-2 text-right">{product.tax}%</td>
+                            <td className="border border-gray-400 px-4 py-2 text-center"></td>
+                            <td className="border border-gray-400 px-4 py-2 text-center"></td>
+                            </tr>
+                            );
+                        })}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
