@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Requests\ProductRequest;
+
 
 class ProductController extends Controller
 {
@@ -22,15 +24,18 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Products/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        //dd($request);
+        $product = new Product($request->input());
+        $product->save();
+        return redirect('products');
     }
 
     /**
