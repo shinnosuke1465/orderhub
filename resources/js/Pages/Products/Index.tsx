@@ -1,5 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import DangerButton from '@/Components/DangerButton';
+import { useForm } from '@inertiajs/react';
 
 interface Product {
     id: number;
@@ -14,6 +16,15 @@ interface ProductsProps {
 }
 
 export default function Products({ products }: ProductsProps) {
+    const form = useForm<{ id: number }>({
+        id: 0,
+    });
+
+    const deleteProduct = (id: number, name: string) => {
+        if (confirm(`Are you sure to delete ${name}?`)) {
+            form.delete(route('products.destroy', id));
+        }
+    };
     return (
         <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Products</h2>}
@@ -50,8 +61,19 @@ export default function Products({ products }: ProductsProps) {
                             <td className="border border-gray-400 px-4 py-2 text-center">{product.code}</td>
                             <td className="border border-gray-400 px-4 py-2 text-right">{product.price}</td>
                             <td className="border border-gray-400 px-4 py-2 text-right">{product.tax}%</td>
-                            <td className="border border-gray-400 px-4 py-2 text-center"></td>
-                            <td className="border border-gray-400 px-4 py-2 text-center"></td>
+                            <td className="border border-gray-400 px-4 py-2 text-center">
+                            <Link
+                                href={route('products.edit', product.id)}
+                                className="px-4 py-2 bg-yellow-400 text-white border rounded-md text-xs"
+                            >
+                                <i className="fa-solid fa-edit"></i>
+                            </Link>
+                            </td>
+                            <td className="border border-gray-400 px-4 py-2 text-center">
+                            <DangerButton onClick={() => deleteProduct(product.id, product.name)}>
+                            <i className="fa-solid fa-trash"></i>
+                            </DangerButton>
+                            </td>
                             </tr>
                             );
                         })}
