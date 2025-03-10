@@ -2,6 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import DangerButton from '@/Components/DangerButton';
 import { useForm } from '@inertiajs/react';
+import { useState } from 'react';
+import TextInput from '@/Components/TextInput';
 
 interface Product {
     id: number;
@@ -13,17 +15,29 @@ interface Product {
 
 interface ProductsProps {
     products: Product[];
+    search_str: string;  // サーバーから渡される search_str を受け取る
 }
 
-export default function Products({ products }: ProductsProps) {
-    const form = useForm<{ id: number }>({
+export default function Products({ products, search_str }: ProductsProps)  {
+    const [searchStr, setSearchStr] = useState<string>(search_str || '');
+    const form = useForm<{ id: number; search_str: string }>({
         id: 0,
+        search_str: searchStr,
     });
 
     const deleteProduct = (id: number, name: string) => {
         if (confirm(`Are you sure to delete ${name}?`)) {
             form.delete(route('products.destroy', id));
         }
+    };
+
+     const searchGo = () => {
+        //form.get(route('products.index'), { search_str: searchStr });
+        const params: Record<string, any> = {};
+        if (searchStr) {
+            params.search_str = searchStr; // searchStrが存在する場合のみ追加
+        }
+        form.get(route('products.index'), params); // パラメータを渡す
     };
     return (
         <AuthenticatedLayout
@@ -40,6 +54,23 @@ export default function Products({ products }: ProductsProps) {
 
                 <div className="m-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2">
+                        <div className="mt-3 mb-3 ml-3 flex">
+                            <Link className='px-4 py-2 bg-indigo-500 text-white border rounded-md font-semibold' href={route('products.create')}>
+                                <i className='fa-solid fa-plus-circle'></i>商品登録
+                            </Link>
+                            <TextInput
+                                id="search_str"
+                                type="text"
+                                className="block w-32 ml-3"
+                                value={searchStr || ''}
+                                onChange={(e) => {
+                                    setSearchStr(e.target.value);
+                                    form.setData('search_str', e.target.value);
+                                }}
+                                autoComplete="search_str"
+                                onBlur={searchGo}
+                            />
+                        </div>
                     <table className="table-auto border border-gray-400 w-10/12 m-3">
                         <thead>
                         <tr className="bg-gray-100">

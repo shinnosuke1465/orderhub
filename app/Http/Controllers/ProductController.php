@@ -13,10 +13,22 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
-        return Inertia::render('Products/Index',['products' => $products]);
+        //$products = Product::all();
+        //return Inertia::render('Products/Index',['products' => $products]);
+        if(empty($request->input()['search_str'])){
+            $search_str=null;
+            $products = Product::all();
+        }else{
+            $search_str=$request->input()['search_str'];
+            $products = Product::where('name','LIKE','%'.$search_str.'%')->get();
+        }
+	    return Inertia::render('Products/Index',
+        [
+            'products' => $products,
+            'search_str' => $search_str,
+        ]);
     }
 
     /**
