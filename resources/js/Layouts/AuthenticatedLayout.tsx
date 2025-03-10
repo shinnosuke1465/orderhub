@@ -34,6 +34,11 @@ export default function Authenticated({
                                     Dashboard
                                 </NavLink>
                             </div>
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('products.index')} active={route().current('products.index')}>
+                                    商品情報
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
@@ -137,6 +142,11 @@ export default function Authenticated({
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                    </div>
+                    <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <NavLink href={route('products.index')} active={route().current('products.index')}>
+                            商品情報
+                        </NavLink>
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
