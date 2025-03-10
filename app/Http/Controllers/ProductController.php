@@ -15,14 +15,15 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        //$products = Product::all();
-        //return Inertia::render('Products/Index',['products' => $products]);
         if(empty($request->input()['search_str'])){
             $search_str=null;
-            $products = Product::all();
+            //$products = Product::all();
+            $products = Product::paginate(5);
         }else{
             $search_str=$request->input()['search_str'];
-            $products = Product::where('name','LIKE','%'.$search_str.'%')->get();
+            //$products = Product::where('name','LIKE','%'.$search_str.'%')->get();
+            $products = Product::where('name','LIKE','%'.$search_str.'%')->paginate(5);
+            //return dd($search_str['search_str']);
         }
 	    return Inertia::render('Products/Index',
         [
@@ -47,7 +48,7 @@ class ProductController extends Controller
         //dd($request);
         $product = new Product($request->input());
         $product->save();
-        return redirect('products');
+        return redirect()->route('products.index')->with('success_str', '登録完了しました');
     }
 
     /**
@@ -72,7 +73,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->input());
-        return redirect('products');
+        return redirect()->route('products.index')->with('success_str', '更新完了しました');
     }
 
 
