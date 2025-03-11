@@ -8,6 +8,8 @@ use App\Models\Order;
 use Inertia\Inertia;
 use App\Http\Resources\OrderResource;
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Customer;
 
 class OrderController extends Controller
 {
@@ -17,24 +19,24 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         //$orders = OrderResource::collection(Order::paginate(5));
-        if(empty($request->input()['search_str'])){
-            $search_str=null;
+        if (empty($request->input()['search_str'])) {
+            $search_str = null;
             $orders = OrderResource::collection(
                 Order::orderBy('id', 'desc')
-                ->paginate(5)
+                    ->paginate(5)
             );
-        }else{
-            $search_str=$request->input()['search_str'];
+        } else {
+            $search_str = $request->input()['search_str'];
             $orders = Order::whereHas('customer', function ($query) use ($search_str) {
                 $query->where('name', 'LIKE', '%' . $search_str . '%');
             })
-            ->orderBy('id', 'desc')
-            ->paginate(5);
+                ->orderBy('id', 'desc')
+                ->paginate(5);
 
             $orders = OrderResource::collection($orders);
         }
 
-        return Inertia::render('Orders/Index',[
+        return Inertia::render('Orders/Index', [
             'orders' => $orders,
             'search_str' => $search_str,
         ]);
@@ -45,7 +47,12 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $customers = Customer::all();
+        $products = Product::all();
+        return Inertia::render('Orders/Create', [
+            'customers' => $customers,
+            'products' => $products,
+        ]);
     }
 
     /**
@@ -53,7 +60,10 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $order = new Order($request->input());
+        $order->orderday = date("Y-m-d H:i:s");
+        $order->save();
+        return redirect()->route('orders.index')->with('success_str', '登録完了しました');
     }
 
     /**
@@ -69,7 +79,13 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $customers = Customer::all();
+        $products = Product::all();
+        return Inertia::render('Orders/Edit',[
+            'order' => $order,
+            'customers' => $customers,
+            'products' => $products,
+        ]);
     }
 
     /**
