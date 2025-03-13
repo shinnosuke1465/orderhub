@@ -15,4 +15,20 @@ class Product extends Model
         'price',
         'tax',
     ];
+    //public function orders()
+    //{
+    //    return $this->hasMany(Order::class);
+    //}
+    public function Product1()
+    {
+        return $this->hasMany(Order::class, 'product_id1');
+    }
+    public function Product2()
+    {
+        return $this->hasMany(Order::class, 'product_id2');
+    }
+    public function Product3()
+    {
+        return $this->hasMany(Order::class, 'product_id3');
+    }
 }

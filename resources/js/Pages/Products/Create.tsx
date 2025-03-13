@@ -37,7 +37,7 @@ export default function CreateProduct() {
             onSuccess: () => reset('name', 'code', 'price', 'tax'),
         });
     };
-    
+
     return (
         <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">CreateProduct</h2>}
