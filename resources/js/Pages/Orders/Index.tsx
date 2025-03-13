@@ -163,6 +163,15 @@ export default function Orders({ orders, search_str, successMessage }: OrdersPro
                                                 </DangerButton>
                                             </td>
 
+                                            <td className="border border-gray-400 px-4 py-2 text-center">
+                                                <Link
+                                                    href={route('orders.show', order.id)}
+                                                    className="px-4 py-2 bg-green-400 text-white border rounded-md text-xs"
+                                                >
+                                                    <i className="fa-solid fa-info"></i>
+                                                </Link>
+                                            </td>
+
                                         </tr>
                                     );
                                 })}

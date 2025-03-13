@@ -71,7 +71,48 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $orderResource = new OrderResource($order);
+
+        $normal_tax_total = 0;//お買い上げ額合計 10%
+        $reduced_tax_total = 0;//お買い上げ額合計 8%
+        //商品1
+        if($orderResource->product1['tax']==10){
+            $normal_tax_total = $normal_tax_total + $orderResource->product1['price'] * $orderResource->num1;
+        }
+        if($orderResource->product1['tax']==8){
+            $reduced_tax_total = $reduced_tax_total + $orderResource->product1['price'] * $orderResource->num1;
+        }
+        //商品2
+        if($orderResource->product2){
+            if($orderResource->product2['tax']==10){
+                $normal_tax_total = $normal_tax_total + $orderResource->product2['price'] * $orderResource->num2;
+            }
+            if($orderResource->product2['tax']==8){
+                $reduced_tax_total = $reduced_tax_total + $orderResource->product2['price'] * $orderResource->num2;
+            }
+        }
+        //商品3
+        if($orderResource->product3){
+            if($orderResource->product3['tax']==10){
+                $normal_tax_total = $normal_tax_total + $orderResource->product3['price'] * $orderResource->num3;
+            }
+            if($orderResource->product3['tax']==8){
+                $reduced_tax_total = $reduced_tax_total + $orderResource->product3['price'] * $orderResource->num3;
+            }
+        }
+        //消費税計算
+        $normal_tax = (int)($normal_tax_total * 0.1);//10％の消費税計
+        $reduced_tax = (int)($reduced_tax_total * 0.08);//8％の消費税計
+        $total = $normal_tax_total + $reduced_tax_total + $normal_tax + $reduced_tax;//ご請求額
+
+        return Inertia::render('Orders/Show',[
+            'order' => $orderResource,
+            'normal_tax_total' => number_format($normal_tax_total),
+            'reduced_tax_total' => number_format($reduced_tax_total),
+            'normal_tax' => number_format($normal_tax),
+            'reduced_tax' => number_format($reduced_tax),
+            'total' => number_format($total),
+        ]);
     }
 
     /**
@@ -93,7 +134,9 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $order->orderday = date("Y-m-d H:i:s");
+        $order->update($request->input());
+        return redirect()->route('orders.index')->with('success_str', '更新完了しました');
     }
 
     /**
@@ -101,6 +144,8 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $order->delete();
+        return redirect('orders');
     }
+
 }
